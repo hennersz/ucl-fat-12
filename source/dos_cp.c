@@ -47,7 +47,7 @@ void get_name(char *fullname, struct direntry *dirent)
     else
       break;
   }
-  fullname[0]='\0';
+  fullname[0] = '\0';
   strcat(fullname, name);
 
   /* append the extension if it's not a directory */
@@ -66,8 +66,7 @@ void get_name(char *fullname, struct direntry *dirent)
 #define FIND_DIR 1
 
 struct direntry* find_file(char *infilename, uint16_t cluster,
- int find_mode,
- uint8_t *image_buf, struct bpb33* bpb)
+  int find_mode, uint8_t *image_buf, struct bpb33* bpb)
 {
   char buf[MAXPATHLEN];
   char *seek_name, *next_name;
@@ -128,7 +127,7 @@ struct direntry* find_file(char *infilename, uint16_t cluster,
         continue;
       }
       get_name(fullname, dirent);
-      if (strcmp(fullname, seek_name)==0) {
+      if (strcmp(fullname, seek_name) == 0) {
         /* found it! */
         if ((dirent->deAttributes & ATTR_DIRECTORY) != 0) {
           /* it's a directory */
@@ -168,7 +167,7 @@ struct direntry* find_file(char *infilename, uint16_t cluster,
    a time */
 
 void copy_out_file(FILE *fd, uint16_t cluster, uint32_t bytes_remaining,
- uint8_t *image_buf, struct bpb33* bpb)
+  uint8_t *image_buf, struct bpb33* bpb)
 {
   int total_clusters, clust_size;
   uint8_t *p;
@@ -205,7 +204,7 @@ void copy_out_file(FILE *fd, uint16_t cluster, uint32_t bytes_remaining,
    regular file in the file system */
 
 void copyout(char *infilename, char* outfilename,
- uint8_t *image_buf, struct bpb33* bpb)
+  uint8_t *image_buf, struct bpb33* bpb)
 {
   struct direntry *dirent = (void*)1;
   FILE *fd;
@@ -305,7 +304,7 @@ uint16_t copy_in_file(FILE* fd, uint8_t *image_buf, struct bpb33* bpb,
 
 /* write the values into a directory entry */
 void write_dirent(struct direntry *dirent, char *filename,
- uint16_t start_cluster, uint32_t size)
+  uint16_t start_cluster, uint32_t size)
 {
   char *p, *p2;
   char *uppername;
@@ -341,7 +340,7 @@ void write_dirent(struct direntry *dirent, char *filename,
     if (len > 3) len = 3;
     memcpy(dirent->deExtension, p, len);
   }
-  if (strlen(uppername)>8) {
+  if (strlen(uppername) > 8) {
     uppername[8]='\0';
   }
   memcpy(dirent->deName, uppername, strlen(uppername));
@@ -361,8 +360,7 @@ void write_dirent(struct direntry *dirent, char *filename,
    directory entry */
 
 void create_dirent(struct direntry *dirent, char *filename,
- uint16_t start_cluster, uint32_t size,
- uint8_t *image_buf, struct bpb33* bpb)
+  uint16_t start_cluster, uint32_t size, uint8_t *image_buf, struct bpb33* bpb)
 {
   while(1) {
     if (dirent->deName[0] == SLOT_EMPTY) {
@@ -389,7 +387,7 @@ void create_dirent(struct direntry *dirent, char *filename,
    file in the FAT-12 memory disk image  */
 
 void copyin(char *infilename, char* outfilename,
- uint8_t *image_buf, struct bpb33* bpb)
+  uint8_t *image_buf, struct bpb33* bpb)
 {
   struct direntry *dirent = (void*)1;
   FILE *fd;
