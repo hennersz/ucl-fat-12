@@ -79,66 +79,66 @@ struct bpb33* check_bootsector(uint8_t *image_buf)
   bootsect = (struct bootsector33*)image_buf;
   if (bootsect->bsJump[0] == 0xe9 ||
     (bootsect->bsJump[0] == 0xeb && bootsect->bsJump[2] == 0x90)) {
-#ifdef DEBUG
+  #ifdef DEBUG
     printf("Good jump inst\n");
-#endif
-} else {
-  fprintf(stderr, "illegal boot sector jump inst: %x%x%x\n",
-    bootsect->bsJump[0], bootsect->bsJump[1],
-    bootsect->bsJump[2]);
-}
+  #endif
+  } else {
+    fprintf(stderr, "illegal boot sector jump inst: %x%x%x\n",
+      bootsect->bsJump[0], bootsect->bsJump[1],
+      bootsect->bsJump[2]);
+  }
 
-#ifdef DEBUG
-printf("OemName: %s\n", bootsect->bsOemName);
-#endif
+  #ifdef DEBUG
+  printf("OemName: %s\n", bootsect->bsOemName);
+  #endif
 
-if (bootsect->bsBootSectSig0 == BOOTSIG0
-  && bootsect->bsBootSectSig0 == BOOTSIG0) {
-  //Good boot sector sig;
-#ifdef DEBUG
-  printf("Good boot sector signature\n");
-#endif
-} else {
-  fprintf(stderr, "Boot boot sector signature %x%x\n",
-    bootsect->bsBootSectSig0,
-    bootsect->bsBootSectSig1);
-}
+  if (bootsect->bsBootSectSig0 == BOOTSIG0
+    && bootsect->bsBootSectSig0 == BOOTSIG0) {
+    //Good boot sector sig;
+  #ifdef DEBUG
+    printf("Good boot sector signature\n");
+  #endif
+  } else {
+    fprintf(stderr, "Boot boot sector signature %x%x\n",
+      bootsect->bsBootSectSig0,
+      bootsect->bsBootSectSig1);
+  }
 
-bpb = (struct byte_bpb33*)&(bootsect->bsBPB[0]);
+  bpb = (struct byte_bpb33*)&(bootsect->bsBPB[0]);
 
   /* bpb is a byte-based struct, because this data is unaligned.
      This makes it hard to access the multi-byte fields, so we copy
      it to a slightly larger struct that is word-aligned */
-bpb2 = malloc(sizeof(struct bpb33));
+  bpb2 = malloc(sizeof(struct bpb33));
 
-bpb2->bpbBytesPerSec = getushort(bpb->bpbBytesPerSec);
-bpb2->bpbSecPerClust = bpb->bpbSecPerClust;
-bpb2->bpbResSectors = getushort(bpb->bpbResSectors);
-bpb2->bpbFATs = bpb->bpbFATs;
-bpb2->bpbRootDirEnts = getushort(bpb->bpbRootDirEnts);
-bpb2->bpbSectors = getushort(bpb->bpbSectors);
-bpb2->bpbFATsecs = getushort(bpb->bpbFATsecs);
-bpb2->bpbHiddenSecs = getushort(bpb->bpbHiddenSecs);
+  bpb2->bpbBytesPerSec = getushort(bpb->bpbBytesPerSec);
+  bpb2->bpbSecPerClust = bpb->bpbSecPerClust;
+  bpb2->bpbResSectors = getushort(bpb->bpbResSectors);
+  bpb2->bpbFATs = bpb->bpbFATs;
+  bpb2->bpbRootDirEnts = getushort(bpb->bpbRootDirEnts);
+  bpb2->bpbSectors = getushort(bpb->bpbSectors);
+  bpb2->bpbFATsecs = getushort(bpb->bpbFATsecs);
+  bpb2->bpbHiddenSecs = getushort(bpb->bpbHiddenSecs);
 
 
-#ifdef DEBUG
-printf("Bytes per sector: %d\n", bpb2->bpbBytesPerSec);
-printf("Sectors per cluster: %d\n", bpb2->bpbSecPerClust);
-printf("Reserved sectors: %d\n", bpb2->bpbResSectors);
-printf("Number of FATs: %d\n", bpb->bpbFATs);
-printf("Number of root dir entries: %d\n", bpb2->bpbRootDirEnts);
-printf("Total number of sectors: %d\n", bpb2->bpbSectors);
-printf("Number of sectors per FAT: %d\n", bpb2->bpbFATsecs);
-printf("Number of hidden sectors: %d\n", bpb2->bpbHiddenSecs);
-#endif
+  #ifdef DEBUG
+  printf("Bytes per sector: %d\n", bpb2->bpbBytesPerSec);
+  printf("Sectors per cluster: %d\n", bpb2->bpbSecPerClust);
+  printf("Reserved sectors: %d\n", bpb2->bpbResSectors);
+  printf("Number of FATs: %d\n", bpb->bpbFATs);
+  printf("Number of root dir entries: %d\n", bpb2->bpbRootDirEnts);
+  printf("Total number of sectors: %d\n", bpb2->bpbSectors);
+  printf("Number of sectors per FAT: %d\n", bpb2->bpbFATsecs);
+  printf("Number of hidden sectors: %d\n", bpb2->bpbHiddenSecs);
+  #endif
 
-return bpb2;
+  return bpb2;
 }
 
 /* get_fat_entry returns the value from the FAT entry for
    clusternum. */
 uint16_t get_fat_entry(uint16_t clusternum,
- uint8_t *image_buf, struct bpb33* bpb)
+  uint8_t *image_buf, struct bpb33* bpb)
 {
   uint32_t offset;
   uint16_t value;
@@ -147,7 +147,7 @@ uint16_t get_fat_entry(uint16_t clusternum,
   /* this involves some really ugly bit shifting.  This probably
      only works on a little-endian machine. */
   offset = bpb->bpbResSectors * bpb->bpbBytesPerSec * bpb->bpbSecPerClust
-  + (3 * (clusternum/2));
+    + (3 * (clusternum/2));
   switch(clusternum % 2) {
     case 0:
     b1 = *(image_buf + offset);
@@ -166,7 +166,7 @@ uint16_t get_fat_entry(uint16_t clusternum,
 
 /* set_fat_entry sets the value of the FAT entry for clusternum to value. */
 void set_fat_entry(uint16_t clusternum, uint16_t value,
- uint8_t *image_buf, struct bpb33* bpb)
+  uint8_t *image_buf, struct bpb33* bpb)
 {
   uint32_t offset;
   uint8_t *p1, *p2;
@@ -174,7 +174,7 @@ void set_fat_entry(uint16_t clusternum, uint16_t value,
   /* this involves some really ugly bit shifting.  This probably
      only works on a little-endian machine. */
   offset = bpb->bpbResSectors * bpb->bpbBytesPerSec * bpb->bpbSecPerClust
-  + (3 * (clusternum/2));
+    + (3 * (clusternum/2));
   switch(clusternum % 2) {
     case 0:
     p1 = image_buf + offset;
@@ -212,7 +212,7 @@ uint8_t *root_dir_addr(uint8_t *image_buf, struct bpb33* bpb)
   uint32_t offset;
   offset =
   (bpb->bpbBytesPerSec
-   * (bpb->bpbResSectors + (bpb->bpbFATs * bpb->bpbFATsecs)));
+    * (bpb->bpbResSectors + (bpb->bpbFATs * bpb->bpbFATsecs)));
   return image_buf + offset;
 }
 
@@ -220,7 +220,7 @@ uint8_t *root_dir_addr(uint8_t *image_buf, struct bpb33* bpb)
    cluster actually starts */
 
 uint8_t *cluster_to_addr(uint16_t cluster, uint8_t *image_buf,
- struct bpb33* bpb)
+  struct bpb33* bpb)
 {
   uint8_t *p;
   p = root_dir_addr(image_buf, bpb);
@@ -229,7 +229,7 @@ uint8_t *cluster_to_addr(uint16_t cluster, uint8_t *image_buf,
     p += bpb->bpbRootDirEnts * sizeof(struct direntry);
   /* move forward the right number of clusters */
     p += bpb->bpbBytesPerSec * bpb->bpbSecPerClust
-    * (cluster - CLUST_FIRST);
+      * (cluster - CLUST_FIRST);
   }
   return p;
 }
