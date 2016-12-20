@@ -1,5 +1,4 @@
 CFLAGS = -g -Wall
-CC = clang
 
 ALL:	dos_ls dos_cp dos_scandisk
 .PHONY: ALL clean
