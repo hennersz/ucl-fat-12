@@ -16,7 +16,6 @@
 #include "fat.h"
 #include "dos.h"
 
-#define DEBUG 1
 
 /* memory map the FAT-12  disk image file */
 uint8_t *mmap_file(char *filename, int *fd)

@@ -19,6 +19,8 @@ test:
 	./dos_scandisk ../testing/floppy.img
 	./dos_scandisk ../testing/badfloppy1.img
 	./dos_scandisk ../testing/badfloppy2.img
+	./dos_ls ../testing/badfloppy1.img
+	./dos_ls ../testing/badfloppy2.img
 
 
 clean:
